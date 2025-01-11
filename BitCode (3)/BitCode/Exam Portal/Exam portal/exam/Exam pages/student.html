@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-dark: #000; 
+            --bg-medium: #222; 
+            --bg-light: #333; 
+            --text-primary: #fff; 
+            --text-secondary: #B0B0B0;
+            --accent-color: #f44336; 
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 80px;
+            background-color: var(--bg-medium);
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar:hover {
+            width: 250px;
+        }
+
+        .sidebar:hover .sidebar-menu-text {
+            display: inline-block;
+            margin-left: 15px;
+        }
+
+        .sidebar-logo {
+            width: 100%;
+            text-align: left;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            padding-left: 15px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .sidebar-menu-item {
+            width: 100%;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .sidebar-menu-item:hover {
+            background-color: var(--bg-light);
+        }
+
+        .sidebar-menu-item.active {
+            background-color: rgba(244, 67, 54, 0.2);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .sidebar-menu-item .material-icons {
+            color: var(--text-secondary);
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .sidebar-menu-text {
+            display: none;
+            white-space: nowrap;
+            margin-left: 0;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: var(--bg-dark);
+        }
+
+        .dashboard-grid, .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card, .section-card {
+            background-color: var(--bg-medium);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: 1px solid var(--bg-light);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .dashboard-card:hover, .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-card-icon, .section-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .dashboard-card-title, .section-card-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .dashboard-card-count, .section-card-count {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: var(--bg-dark);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-medium);
+            padding: 30px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <span class="material-icons">school</span>
+                <span class="sidebar-menu-text">Student Portal</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu-item active" onclick="showSection('dashboard')">
+                    <span class="material-icons">dashboard</span>
+                    <span class="sidebar-menu-text">Dashboard</span>
+                </li>
+                <li class="sidebar-menu-item" onclick="showSection('exams')">
+                    <span class="material-icons">assignment</span>
+                    <span class="sidebar-menu-text">Exams</span>
+                </li>
+                <li class="sidebar-menu-item" onclick="showSection('results')">
+                    <span class="material-icons">bar_chart</span>
+                    <span class="sidebar-menu-text">Results</span>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <button class="btn" onclick="sendResultsToAdmin()">Send to Admin</button>
+                <button class="btn" onclick="resetExamResults()">Reset Results</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="dashboard" class="section active">
+                <h1>Welcome, Student</h1>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-icon">
+                            <span class="material-icons">assignment</span>
+                        </div>
+                        <div class="dashboard-card-title">Upcoming Exams</div>
+                        <div class="dashboard-card-count" id="upcoming-exams-count">3</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-icon">
+                            <span class="material-icons">check_circle</span>
+                        </div>
+                        <div class="dashboard-card-title">Completed Exams</div>
+                        <div class="dashboard-card-count" id="completed-exams-count">1</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="exams" class="section">
+                <h1>Upcoming Exams</h1>
+                <div class="section-grid">
+                    <div class="section-card">
+                        <div class="section-card-icon">
+                            <span class="material-icons">book</span>
+                        </div>
+                        <div class="section-card-title">General Knowledge</div>
+                        <div class="section-card-action">
+                            <button class="btn" onclick="window.open('Exam3.html', '_blank')">Start Exam</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="results" class="section">
+                <h1>Performance Overview</h1>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Results Sent</h2>
+            <p id="modal-message">Your exam results have been successfully sent to the admin.</p>
+            <button class="btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Section Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        // Performance Chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            const examResults = JSON.parse(localStorage.getItem('examResults')) || [];
+
+            const subjects = examResults.map(result => result.subject);
+            const points = examResults.map(result => result.points);
+            const totalQuestions = examResults.map(result => result.totalQuestions);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: subjects.length ? subjects : ['No Exams'],
+                    datasets: [{
+                        label: 'Points Earned',
+                        data: points.length ? points : [0],
+                        backgroundColor: 'rgba(244, 67, 54, 0.6)',
+                        borderColor: 'rgba(244, 67, 54, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Total Questions',
+                        data: totalQuestions.length ? totalQuestions : [15],
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 15
+                        }
+                    }
+                }
+            });
+
+            // Update exam counts
+            document.getElementById('completed-exams-count').textContent = examResults.length;
+        });
+
+        // Send Results to Admin
+        function sendResultsToAdmin() {
+            const examResults = JSON.parse(localStorage.getItem('examResults')) || [];
+            
+            // Send results to admin (you might want to implement actual backend communication)
+            localStorage.setItem('adminResults', JSON.stringify(examResults));
+            
+            // Show modal
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // Reset Exam Results
+        function resetExamResults() {
+            localStorage.removeItem('examResults');
+            location.reload(); // Refresh the page
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

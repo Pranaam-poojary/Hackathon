@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background-color: #222;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #444;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        .error {
+            color: #f44336;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Admin Login</h2>
+        <div class="error" id="error-message"></div>
+        <form onsubmit="return validateLogin()">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        function validateLogin() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Simple client-side validation for hardcoded credentials
+            if (username === 'admin' && password === 'admin123') {
+                // Redirect to admin.html if credentials match
+                window.location.href = 'admin.html';  // Use relative path
+
+                return false;  // Prevent form submission (since we're using JS for redirection)
+            } else {
+                // Display error message
+                document.getElementById('error-message').innerText = 'Invalid username or password!';
+                return false;  // Prevent form submission
+            }
+        }
+    </script>
+</body>
+</html>

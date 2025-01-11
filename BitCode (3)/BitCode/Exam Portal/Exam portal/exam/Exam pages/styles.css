@@ -1,0 +1,218 @@
+/* Reset & Font Import */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+.dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 15%;
+    background-color: #222;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    border-right: 1px solid #444;
+}
+
+.logo h2 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    list-style-type: none;
+}
+
+.nav-links li {
+    margin-bottom: 20px;
+}
+
+.nav-links li a {
+    display: flex;
+    align-items: center;
+    color: #ccc;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-links li a i {
+    margin-right: 10px;
+    color: #FF5722;
+}
+
+.nav-links li a:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.nav-links li a.active, .nav-links li a:hover {
+    background-color: #333;
+    color: #FF5722;
+}
+
+.nav-links li a:hover:before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Main Content Styling */
+.main-content {
+    width: 85%;
+    padding: 20px;
+    background-color: #111;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    color: #fff;
+    font-size: 2rem;
+}
+
+.stats {
+    display: flex;
+}
+
+.stat-box {
+    background-color: #333;
+    color: #FF5722;
+    padding: 15px;
+    margin-right: 10px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.stat-box h3 {
+    font-size: 1.5rem;
+}
+
+.stat-box p {
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+/* Upcoming Exams Section */
+.upcoming-exams h2 {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.upcoming-exams ul {
+    list-style-type: none;
+    margin-top: 20px;
+}
+
+.upcoming-exams ul li {
+    background-color: #222;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 4px solid #FF5722;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.upcoming-exams ul li:hover {
+    transform: translateX(10px);
+}
+
+.upcoming-exams ul li span {
+    color: #ccc;
+}
+
+.select-exam-btn {
+    background-color: #FF5722;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.select-exam-btn:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.select-exam-btn:hover {
+    background-color: #F4511E;
+}
+
+.select-exam-btn:hover:before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Chart Styling */
+.chart-container {
+    margin-top: 30px;
+    background-color: #222;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.chart-container h2 {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard {
+        flex-direction: column;
+    }
+    
+    .sidebar, .main-content {
+        width: 100%;
+    }
+}

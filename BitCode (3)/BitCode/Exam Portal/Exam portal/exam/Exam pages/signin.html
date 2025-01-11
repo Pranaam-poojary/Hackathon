@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Sign Up</h2>
+            <form onsubmit="return signUp()">
+                <div class="input-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" name="password" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="signup-confirm-password">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" name="confirm-password" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="signup-email">Gmail</label>
+                    <input type="email" id="signup-email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-college">College</label>
+                    <input type="text" id="signup-college" name="college" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-usn">USN</label>
+                    <input type="text" id="signup-usn" name="usn" required>
+                </div>
+                <div class="input-group">
+                    <button type="submit" class="btn">Sign Up</button>
+                </div>
+            </form>
+            <p>Already have an account? <a href="login.html">Login</a></p>
+        </div>
+    </div>
+
+    <script>
+        function signUp() {
+            var username = document.getElementById('signup-username').value;
+            var password = document.getElementById('signup-password').value;
+            var confirmPassword = document.getElementById('signup-confirm-password').value;
+            var email = document.getElementById('signup-email').value;
+            var college = document.getElementById('signup-college').value;
+            var usn = document.getElementById('signup-usn').value;
+
+            // Check if the password and confirm password match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match! Please try again.');
+                return false;
+            }
+
+            // Create a new user object
+            var newUser = {
+                username: username,
+                password: password,
+                email: email,
+                college: college,
+                usn: usn
+            };
+
+            // Get the existing users from local storage or initialize an empty array
+            var users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Check if the username already exists
+            var existingUser = users.find(user => user.username === username);
+            if (existingUser) {
+                alert('Username already exists. Please choose another username.');
+                return false;
+            }
+
+            // Add the new user to the users array
+            users.push(newUser);
+
+            // Save the updated users array back to local storage
+            localStorage.setItem('users', JSON.stringify(users));
+
+            
+            // Redirect to the login page
+            window.location.href = 'login.html';
+
+            return false; // Prevent form submission and page reload
+        }
+    </script>
+</body>
+</html>

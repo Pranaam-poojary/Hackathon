@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #000; 
+            --bg-medium: #222; 
+            --bg-light: #333; 
+            --text-primary: #fff; 
+            --text-secondary: #B0B0B0;
+            --accent-color: #f44336; 
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 80px;
+            background-color: var(--bg-medium);
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar:hover {
+            width: 250px;
+        }
+
+        .sidebar:hover .sidebar-menu-text {
+            display: inline-block;
+            margin-left: 15px;
+        }
+
+        .sidebar-logo {
+            width: 100%;
+            text-align: left;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            padding-left: 15px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .sidebar-menu-item {
+            width: 100%;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .sidebar-menu-item:hover {
+            background-color: var(--bg-light);
+        }
+
+        .sidebar-menu-item.active {
+            background-color: rgba(244, 67, 54, 0.2);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .sidebar-menu-item .material-icons {
+            color: var(--text-secondary);
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .sidebar-menu-text {
+            display: none;
+            white-space: nowrap;
+            margin-left: 0;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: var(--bg-dark);
+        }
+
+        .dashboard-grid, .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card, .section-card {
+            background-color: var(--bg-medium);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: 1px solid var(--bg-light);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .dashboard-card:hover, .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-card-icon, .section-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .dashboard-card-title, .section-card-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .dashboard-card-count, .section-card-count {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .dashboard-card-action, .section-card-action {
+            margin-top: 15px;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: var(--bg-dark);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-medium);
+            padding: 30px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <span class="material-icons">dashboard</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu-item active" data-section="dashboard">
+                    <span class="material-icons">home</span>
+                    <span class="sidebar-menu-text">Dashboard</span>
+                </li>
+                <li class="sidebar-menu-item" data-section="manage-exams">
+                    <span class="material-icons">assignment</span>
+                    <span class="sidebar-menu-text">Manage Exams</span>
+                </li>
+                <li class="sidebar-menu-item" data-section="user-management">
+                    <span class="material-icons">people</span>
+                    <span class="sidebar-menu-text">User Management</span>
+                </li>
+                <li class="sidebar-menu-item" data-section="analytics">
+                    <span class="material-icons">analytics</span>
+                    <span class="sidebar-menu-text">Analytics</span>
+                </li>
+                <li class="sidebar-menu-item" data-section="student-results-section">
+                    <span class="material-icons">trending_up</span>
+                    <span class="sidebar-menu-text">Student Results</span>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="sidebar-menu-item" data-section="settings">
+                    <span class="material-icons">settings</span>
+                    <span class="sidebar-menu-text">Settings</span>
+                </div>
+            </div>
+        </div>
+        <div class="main-content">
+            <div id="dashboard" class="section active">
+                <h1>Dashboard</h1>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-icon">
+                            <span class="material-icons">assignment</span>
+                        </div>
+                        <div class="dashboard-card-title">Total Exams</div>
+                        <div class="dashboard-card-count">24</div>
+                        <div class="dashboard-card-action">
+                            <button class="btn">View Details</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-icon">
+                            <span class="material-icons">people</span>
+                        </div>
+                        <div class="dashboard-card-title">Total Users</div>
+                        <div class="dashboard-card-count">1,256</div>
+                        <div class="dashboard-card-action">
+                            <button class="btn">Manage Users</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-icon">
+                            <span class="material-icons">bar_chart</span>
+                        </div>
+                        <div class="dashboard-card-title">Recent Results</div>
+                        <div class="dashboard-card-count">512</div>
+                        <div class="dashboard-card-action">
+                            <button class="btn">View Results</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-icon">
+                            <span class="material-icons">timer</span>
+                        </div>
+                        <div class="dashboard-card-title">Active Exams</div>
+                        <div class="dashboard-card-count">6</div>
+                        <div class="dashboard-card-action">
+                            <button class="btn">Manage Exams</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="manage-exams" class="section">
+                <h1>Manage Exams</h1>
+                <div class="section-grid">
+                    <div class="section-card" onclick="openModal('create-exam')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">add_circle</span>
+                        </div>
+                        <div class="section-card-title">Create New Exam</div>
+                    </div>
+                    <div class="section-card" onclick="openModal('exam-list')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">list</span>
+                        </div>
+                        <div class="section-card-title">Exam List</div>
+                    </div>
+                    <div class="section-card" onclick="openModal('exam-templates')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">template</span>
+                        </div>
+                        <div class="section-card-title">Exam Templates</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="user-management" class="section">
+                <h1>User Management</h1>
+                <div class="section-grid">
+                    <div class="section-card" onclick="openModal('add-user')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">person_add</span>
+                        </div>
+                        <div class="section-card-title">Add User</div>
+                    </div>
+                    <div class="section-card" onclick="openModal('user-list')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">groups</span>
+                        </div>
+                        <div class="section-card-title">User List</div>
+                    </div>
+                    <div class="section-card" onclick="openModal('user-roles')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">manage_accounts</span>
+                        </div>
+                        <div class="section-card-title">User Roles</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="analytics" class="section">
+                <h1>Analytics</h1>
+                <div class="section-grid">
+                    <div class="section-card" onclick="openModal('exam-performance')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">bar_chart</span>
+                        </div>
+                        <div class="section-card-title">Exam Performance</div>
+                    </div>
+                    <div class="section-card" onclick="openModal('user-activity')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">trending_up</span>
+                        </div>
+                        <div class="section-card-title">User Activity</div>
+                    </div>
+                    <div class="section-card" onclick="openModal('reports')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">description</span>
+                        </div>
+                        <div class="section-card-title">Reports</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings" class="section">
+                <h1>Settings</h1>
+                <div class="section-grid">
+                    <div class="section-card" onclick="openModal('account-settings')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">account_circle</span>
+                        </div>
+                        <div class="section-card-title">Account Settings</div>
+                    </div>
+                    <div class="section-card" onclick="openModal('security')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">security</span>
+                        </div>
+                        <div class="section-card-title">Security</div>
+                    </div>
+                    <div class="section-card" onclick="openModal('appearance')">
+                        <div class="section-card-icon">
+                            <span class="material-icons">palette</span>
+                        </div>
+                        <div class="section-card-title">Appearance</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="student-results-section" class="section">
+                <h1>Student Results</h1>
+                <div class="dashboard-grid" id="student-analytics"></div>
+                <div id="student-results"></div>
+                <button class="btn" onclick="clearStudentResults()">Clear Results</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Modal Title</h2>
+            <p id="modal-description">Modal description goes here.</p>
+            <button class="btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar Navigation
+        document.querySelectorAll('.sidebar-menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all items
+                document.querySelectorAll('.sidebar-menu-item').forEach(i => i.classList.remove('active'));
+                
+                // Add active class to clicked item
+                item.classList.add('active');
+                
+                // Hide all sections
+                document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+                
+                // Show selected section
+                const sectionId = item.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Modal Functionality
+        function openModal(type) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDescription = document.getElementById('modal-description');
+
+            const modalContent = {
+                'create-exam': {
+                    title: 'Create New Exam',
+                    description: 'Set up a new exam with custom parameters.',
+                    action: () => {
+                        // Open exam creator in a new window or redirect
+                        window.location.href = 'exam-creator.html';
+                    }
+                },
+                'exam-list': {
+                    title: 'Exam List',
+                    description: 'View and manage existing exams.'
+                },
+                'exam-templates': {
+                    title: 'Exam Templates',
+                    description: 'Browse and use pre-made exam templates.'
+                },
+                'add-user': {
+                    title: 'Add User',
+                    description: 'Create a new user account.'
+                },
+                'user-list': {
+                    title: 'User List',
+                    description: 'View and manage all user accounts.'
+                },
+                'user-roles': {
+                    title: 'User Roles',
+                    description: 'Define and assign user roles and permissions.'
+                },
+                'exam-performance': {
+                    title: 'Exam Performance',
+                    description: 'Analyze exam performance metrics.'
+                },
+                'user-activity': {
+                    title: 'User Activity',
+                    description: 'Track and monitor user engagement.'
+                },
+                'reports': {
+                    title: 'Reports',
+                    description: 'Generate and download detailed reports.'
+                },
+                'account-settings': {
+                    title: 'Account Settings',
+                    description: 'Manage your personal account preferences.'
+                },
+                'security': {
+                    title: 'Security',
+                    description: 'Configure security settings and permissions.'
+                },
+                'appearance': {
+                    title: 'Appearance',
+                    description: 'Customize the look and feel of the dashboard.'
+                }
+            };
+
+            const content = modalContent[type];
+            if (content) {
+                modalTitle.textContent = content.title;
+                modalDescription.textContent = content.description;
+                
+                // Add a button to proceed
+                const proceedButton = document.createElement('button');
+                proceedButton.textContent = 'Proceed';
+                proceedButton.className = 'btn';
+                proceedButton.onclick = () => {
+                    if (content.action) {
+                        content.action();
+                    }
+                    closeModal();
+                };
+
+                // Clear existing buttons and add new one
+                const modalContentElement = document.querySelector('.modal-content');
+                const existingButtons = modalContentElement.querySelectorAll('button');
+                existingButtons.forEach(btn => btn.remove());
+                modalContentElement.appendChild(proceedButton);
+
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'none';
+        }
+
+        // Function to load and display student results
+        function loadStudentResults() {
+            const adminResults = JSON.parse(localStorage.getItem('adminResults')) || [];
+            const resultsContainer = document.getElementById('student-results');
+            
+            // Clear previous results
+            resultsContainer.innerHTML = '';
+
+            if (adminResults.length === 0) {
+                resultsContainer.innerHTML = '<p>No student results available.</p>';
+                return;
+            }
+
+            // Create table to display results
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Total Questions</th>
+                        <th>Points Earned</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${adminResults.map(result => `
+                        <tr>
+                            <td>${result.subject}</td>
+                            <td>${result.totalQuestions}</td>
+                            <td>${result.points}</td>
+                            <td>${result.score}%</td>
+                            <td>${new Date(result.timestamp).toLocaleString()}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+
+            resultsContainer.appendChild(table);
+
+            // Update analytics
+            updateStudentAnalytics(adminResults);
+        }
+
+        // Function to update student performance analytics
+        function updateStudentAnalytics(results) {
+            const analyticsContainer = document.getElementById('student-analytics');
+            
+            if (results.length === 0) {
+                analyticsContainer.innerHTML = '<p>No analytics available.</p>';
+                return;
+            }
+
+            // Calculate average score and total points
+            const averageScore = Math.round(
+                results.reduce((sum, result) => sum + result.score, 0) / results.length
+            );
+            const totalPointsEarned = results.reduce((sum, result) => sum + result.points, 0);
+
+            analyticsContainer.innerHTML = `
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon">
+                        <span class="material-icons">trending_up</span>
+                    </div>
+                    <div class="dashboard-card-title">Average Score</div>
+                    <div class="dashboard-card-count">${averageScore}%</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon">
+                        <span class="material-icons">star</span>
+                    </div>
+                    <div class="dashboard-card-title">Total Points</div>
+                    <div class="dashboard-card-count">${totalPointsEarned}</div>
+                </div>
+            `;
+        }
+
+        // Function to clear all student results
+        function clearStudentResults() {
+            localStorage.removeItem('adminResults');
+            loadStudentResults();
+        }
+
+        // Load results when page loads
+        document.addEventListener('DOMContentLoaded', loadStudentResults);
+    </script>
+</body>
+</html>

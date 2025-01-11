@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Login</h2>
+            <form onsubmit="return login()">
+                <div class="input-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" required>
+                </div>
+
+                <!-- Error message div -->
+                <div id="error-message" class="error-message"></div>
+
+                <div class="input-group">
+                    <button type="submit" class="btn">Login</button>
+                </div>
+            </form>
+            <a href="index.html" class="admin-btn">Admin Login</a>
+            <p>Don't have an account? <a href="signin.html">Sign Up</a></p>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            var username = document.getElementById('login-username').value;
+            var password = document.getElementById('login-password').value;
+            var errorMessage = document.getElementById('error-message');
+
+            // Retrieve the users array from local storage
+            var users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Check if the entered username and password match any user's credentials
+            var user = users.find(user => user.username === username && user.password === password);
+
+            if (user) {
+                // Clear any previous error message
+                errorMessage.classList.remove('show-error');
+                errorMessage.innerText = '';
+
+                // Redirect to a user-specific page after login
+                window.location.href = 'student.html';
+            } else {
+                // Show the error message in red under the password field
+                errorMessage.classList.add('show-error');
+                errorMessage.innerText = 'Invalid username or password!';
+            }
+
+            return false;  // Prevent form submission and page reload
+        }
+    </script>
+</body>
+</html>
