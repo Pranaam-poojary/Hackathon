@@ -9,19 +9,18 @@ This project is an **online examination portal** designed to address the challen
 
 ##  Features  
 
--   Tab Switching Prevention**: Prevents users from switching tabs during exams.  
--   Eye Tracking**: Monitors eye movements to detect suspicious activity.  
--   Full-Screen Video Recording**: Records the user's screen and activities throughout the exam.  
--   No Camera Blocking**: Ensures the webcam remains operational for proctoring purposes.  
--   Keyboard Restrictions**: Disables specific keys like `Ctrl`, `Alt`, `Shift`, `Tab`, `Esc`, and `Fn`.  
--   Clipboard Restriction**: Blocks copy-paste functionality to avoid unauthorized resource use.  
+-   Tab Switching Prevention: Prevents users from switching tabs during exams.   
+-   Full-Screen Video Recording: Records the user's screen and activities throughout the exam.  
+-   No Camera Blocking: Ensures the webcam remains operational for proctoring purposes.  
+-   Keyboard Restrictions: Disables specific keys like `Ctrl`, `Alt`, `Shift`, `Tab`, `Esc`, and `Fn`.  
+-   Clipboard Restriction: Blocks copy-paste functionality to avoid unauthorized resource use.  
 
 
 ##  Technology Stack  
 
-- **Frontend**: HTML, CSS, JavaScript  
-- **Backend**:  Local storage 
-- **Database**: Local storage
+- Frontend: HTML, CSS, JavaScript  
+- Backend:  Local storage 
+- Database: Local storage
  
 
 ##  Contributors  
