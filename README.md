@@ -4,7 +4,7 @@
   
 
 ##  Overview  
-This project is an **online examination portal** designed to address the challenges of cheating during online exams. By implementing advanced anti-cheating measures, the platform ensures a fair and secure environment for both students and examiners.  
+This project is an **online examination portal** designed to address the challenges of cheating during online exams. By implementing anti-cheating measures, the platform ensures a fair and secure environment for both students and examiners.  
 
 
 ##  Features  
